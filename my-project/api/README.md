@@ -21,7 +21,7 @@ Este é o backend de uma aplicação que exibe as 5 músicas mais tocadas da dup
 ## 🛠️ Tecnologias
 
 - **Laravel 11** - Framework PHP
-- **MySQL 8.0** - Banco de dados
+- **SQLite** - Banco de dados
 - **Laravel Sanctum** - Autenticação API
 - **Docker** - Containerização
 - **PHPUnit** - Testes automatizados
@@ -138,14 +138,3 @@ O sistema vem com 10 músicas pré-cadastradas da dupla, incluindo clássicos co
 ### Tabela `songs`
 - id, title, artist, views, youtube_id, youtube_url, thumbnail, status, deleted_at, timestamps
 
-## 🤝 Contribuição
-
-1. Fork o projeto
-2. Crie uma branch para sua feature
-3. Commit suas mudanças
-4. Push para a branch
-5. Abra um Pull Request
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT.
