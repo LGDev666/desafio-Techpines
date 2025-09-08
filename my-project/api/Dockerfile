@@ -1,38 +1,41 @@
 FROM php:8.2-fpm
 
-# Instalar dependências do sistema
+# Dependências do sistema
 RUN apt-get update && apt-get install -y \
     git \
     curl \
+    unzip \
+    zip \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
-    zip \
-    unzip \
     libzip-dev \
     sqlite3 \
     libsqlite3-dev \
-    && docker-php-ext-install mbstring exif pcntl bcmath gd zip pdo_sqlite
+    && docker-php-ext-install pdo pdo_mysql pdo_sqlite mbstring exif pcntl bcmath gd zip
 
-# Instalar Composer
+# Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Definir diretório de trabalho
+# Workdir
 WORKDIR /var/www
 
-# Copiar arquivos do projeto
+# Copiar todo o projeto (inclui composer.json e artisan)
 COPY . .
 
-# Instalar dependências PHP
-RUN composer install --no-dev --optimize-autoloader
+# Copiar .env se não existir
+RUN cp .env.example .env || true
 
-# Definir permissões
+# Gerar chave da aplicação
+RUN php artisan key:generate
+
+# Rodar migrations e seeders
+RUN php artisan migrate --seed --force || true
+
+# Permissões
 RUN chown -R www-data:www-data /var/www \
-    && chmod -R 755 /var/www/storage \
-    && chmod -R 755 /var/www/bootstrap/cache
+    && chmod -R 775 /var/www/storage \
+    && chmod -R 775 /var/www/bootstrap/cache
 
-# Expor porta
 EXPOSE 8000
-
-# Comando padrão
-CMD php artisan serve --host=0.0.0.0 --port=8000
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
